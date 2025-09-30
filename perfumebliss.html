@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Perfume Bliss</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold: #FFD700;
+      --hotpink: #FF69B4;
+      --lightgray: #E0E0E0;
+      --black: #121212;
+      --card-bg: #1e1e1e;
+      --shadow: 0 4px 24px rgba(0,0,0,0.4);
+      --gradient: linear-gradient(135deg, #ff69b4, #ffd700);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--black);
+      color: var(--lightgray);
+      font-family: 'Segoe UI', Arial, sans-serif;
+      overflow-x: hidden;
+    }
+    /* Navbar */
+    .navbar {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      background: rgba(34,34,34,0.6);
+      backdrop-filter: blur(12px);
+      border-radius: 30px;
+      border: 1.5px solid var(--gold);
+      padding: 8px 20px;
+      display: flex;
+      gap: 20px;
+      box-shadow: var(--shadow);
+    }
+    .navbar a {
+      color: var(--gold);
+      font-weight: 600;
+      text-decoration: none;
+      padding: 10px 16px;
+      border-radius: 20px;
+      transition: all 0.3s ease;
+    }
+    .navbar a:hover, .navbar a.active {
+      background: var(--hotpink);
+      color: #fff;
+      box-shadow: 0 2px 12px var(--hotpink);
+    }
+    /* Hero */
+    .hero {
+      height: 100vh;
+      background: url('https://images.unsplash.com/photo-1522336572468-97b06e8ef143?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+    }
+    .hero h1 {
+      font-size: 3.5rem;
+      font-family: 'Playfair Display', serif;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+    .hero p {
+      font-size: 1.3rem;
+      margin-bottom: 24px;
+    }
+    .hero button {
+      padding: 14px 28px;
+      border: none;
+      border-radius: 30px;
+      background: var(--gradient);
+      color: #121212;
+      font-weight: bold;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+    .hero button:hover {
+      transform: scale(1.07);
+      color: #fff;
+    }
+    /* Sections */
+    section {
+      max-width: 1100px;
+      margin: 80px auto;
+      padding: 40px 20px;
+      background: rgba(30,30,30,0.85);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateY(50px);
+      transition: all 0.8s cubic-bezier(.77,0,.18,1);
+    }
+    section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .section-heading {
+      font-size: 2.5rem;
+      color: var(--gold);
+      margin-bottom: 10px;
+      font-family: 'Playfair Display', serif;
+      text-align: center;
+    }
+    .section-highlight {
+      font-size: 1.2rem;
+      text-align: center;
+      color: var(--hotpink);
+      margin-bottom: 20px;
+    }
+    .section-desc {
+      font-size: 1.05rem;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    /* Collections */
+    .collections-cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      justify-content: center;
+    }
+    .perfume-card {
+      background: var(--card-bg);
+      border: 2px solid var(--hotpink);
+      border-radius: 16px;
+      width: 200px;
+      text-align: center;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.4s ease;
+    }
+    .perfume-card img {
+      width: 100px;
+      height: 100px;
+      border-radius: 12px;
+      object-fit: cover;
+      margin-bottom: 12px;
+    }
+    .perfume-card:hover {
+      transform: translateY(-8px);
+      border-color: var(--gold);
+      background: linear-gradient(135deg, #ff69b4 0%, #1e1e1e 100%);
+      color: #fff;
+    }
+    .perfume-name {
+      font-weight: bold;
+      color: var(--gold);
+    }
+    .perfume-price {
+      color: var(--hotpink);
+      font-weight: 600;
+      margin-top: 4px;
+    }
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(5px);
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+    .modal-content {
+      background: #222;
+      padding: 30px;
+      border-radius: 16px;
+      max-width: 400px;
+      text-align: center;
+      color: var(--lightgray);
+      border: 2px solid var(--gold);
+      animation: fadeIn 0.5s ease;
+    }
+    .modal-content h2 {
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+    .modal-content button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      background: var(--hotpink);
+      color: #fff;
+      cursor: pointer;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9);}
+      to { opacity: 1; transform: scale(1);}
+    }
+    /* Testimonials carousel */
+    .carousel {
+      position: relative;
+      overflow: hidden;
+      height: 200px;
+    }
+    .carousel-track {
+      display: flex;
+      transition: transform 0.6s ease-in-out;
+    }
+    .testimonial {
+      min-width: 100%;
+      background: rgba(24,24,24,0.9);
+      padding: 20px;
+      border-left: 5px solid var(--gold);
+      color: var(--lightgray);
+    }
+    .testimonial-customer {
+      margin-top: 12px;
+      font-weight: bold;
+      color: var(--hotpink);
+    }
+    /* Contact form */
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-width: 400px;
+      margin: auto;
+    }
+    .contact-form input, .contact-form textarea {
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--hotpink);
+      background: #1e1e1e;
+      color: var(--lightgray);
+    }
+    .contact-form button {
+      padding: 12px;
+      background: var(--gradient);
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .thank-you {
+      text-align: center;
+      margin-top: 15px;
+      color: var(--gold);
+      display: none;
+    }
+    @media (max-width: 700px) {
+      .navbar { gap: 10px; padding: 6px 12px;}
+      .perfume-card { width: 100%; max-width: 320px;}
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="#home" class="active">Home</a>
+    <a href="#about">About</a>
+    <a href="#collections">Collections</a>
+    <a href="#testimonials">Testimonials</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero" id="home">
+    <h1>Perfume Bliss</h1>
+    <p>Unveil Your Signature Scent with Luxury & Elegance</p>
+    <button onclick="document.querySelector('#collections').scrollIntoView({behavior:'smooth'})">Shop Now</button>
+  </section>
+
+  <!-- About -->
+  <section id="about">
+    <h2 class="section-heading">About Us</h2>
+    <div class="section-highlight">Crafting Memories Since 2005</div>
+    <p class="section-desc">
+      At Perfume Bliss, we believe every scent tells a story. Our passion is to create unforgettable fragrances that evoke emotion and celebrate individuality.
+    </p>
+  </section>
+
+  <!-- Collections -->
+  <section id="collections">
+    <h2 class="section-heading">Collections</h2>
+    <div class="section-highlight">Explore Our Signature Perfumes</div>
+    <div class="collections-cards">
+      <div class="perfume-card" data-name="Golden Aura" data-notes="Jasmine, Amber, Vanilla" data-price="$89">
+        <img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80" alt="">
+        <div class="perfume-name">Golden Aura</div>
+        <div class="perfume-price">$89</div>
+      </div>
+      <div class="perfume-card" data-name="Pink Velvet" data-notes="Rose, Musk, Peony" data-price="$79">
+        <img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80" alt="">
+        <div class="perfume-name">Pink Velvet</div>
+        <div class="perfume-price">$79</div>
+      </div>
+      <div class="perfume-card" data-name="Noir Mystique" data-notes="Sandalwood, Patchouli, Bergamot" data-price="$99">
+        <img src="https://images.unsplash.com/photo-1508672019048-805c876b67e2?auto=format&fit=crop&w=400&q=80" alt="">
+        <div class="perfume-name">Noir Mystique</div>
+        <div class="perfume-price">$99</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modal -->
+  <div class="modal" id="perfumeModal">
+    <div class="modal-content">
+      <h2 id="modalName"></h2>
+      <p><strong>Notes:</strong> <span id="modalNotes"></span></p>
+      <p><strong>Price:</strong> <span id="modalPrice"></span></p>
+      <button onclick="closeModal()">Close</button>
+    </div>
+  </div>
+
+  <!-- Testimonials -->
+  <section id="testimonials">
+    <h2 class="section-heading">Testimonials</h2>
+    <div class="section-highlight">What Our Customers Say</div>
+    <div class="carousel">
+      <div class="carousel-track" id="carouselTrack">
+        <div class="testimonial">“Perfume Bliss is my go-to for luxury scents. They last all day and I always get compliments!” <div class="testimonial-customer">– Sophia R.</div></div>
+        <div class="testimonial">“I love the elegant packaging and unique blends. Pink Velvet is my favorite!” <div class="testimonial-customer">– Daniel M.</div></div>
+        <div class="testimonial">“Fast delivery and amazing customer service. Will definitely order again!” <div class="testimonial-customer">– Priya S.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact">
+    <h2 class="section-heading">Contact Us</h2>
+    <div class="section-highlight">We’d Love to Hear From You</div>
+    <form class="contact-form" id="contactForm">
+      <input type="text" id="name" name="name" placeholder="Your Name" required>
+      <input type="email" id="email" name="email" placeholder="Your Email" required>
+      <textarea id="message" name="message" rows="4" placeholder="Your Message" required></textarea>
+      <button type="submit">Send Message</button>
+    </form>
+    <div class="thank-you" id="thankYouMsg">✅ Thank you for contacting Perfume Bliss!</div>
+  </section>
+
+  <script>
+    // Smooth nav scroll + active state
+    const navLinks = document.querySelectorAll('.navbar a');
+    navLinks.forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        document.querySelector(link.getAttribute('href')).scrollIntoView({behavior:'smooth'});
+      });
+    });
+    window.addEventListener('scroll', () => {
+      let current = '';
+      document.querySelectorAll('section').forEach(sec => {
+        const top = window.scrollY;
+        if(top >= sec.offsetTop - 100) current = '#' + sec.id;
+      });
+      navLinks.forEach(a => a.classList.remove('active'));
+      document.querySelector(`.navbar a[href="${current}"]`)?.classList.add('active');
+    });
+
+    // Reveal sections
+    function revealSections() {
+      document.querySelectorAll('section').forEach(sec => {
+        const rect = sec.getBoundingClientRect();
+        if(rect.top < window.innerHeight - 100) sec.classList.add('visible');
+      });
+    }
+    window.addEventListener('scroll', revealSections);
+    window.addEventListener('load', revealSections);
+
+    // Modal
+    const modal = document.getElementById('perfumeModal');
+    const modalName = document.getElementById('modalName');
+    const modalNotes = document.getElementById('modalNotes');
+    const modalPrice = document.getElementById('modalPrice');
+    document.querySelectorAll('.perfume-card').forEach(card => {
+      card.addEventListener('click', () => {
+        modalName.textContent = card.dataset.name;
+        modalNotes.textContent = card.dataset.notes;
+        modalPrice.textContent = card.dataset.price;
+        modal.style.display = 'flex';
+      });
+    });
+    function closeModal() { modal.style.display = 'none'; }
+    modal.addEventListener('click', e => { if(e.target === modal) closeModal(); });
+
+    // Testimonials carousel
+    const track = document.getElementById('carouselTrack');
+    let index = 0;
+    setInterval(() => {
+      index = (index + 1) % 3;
+      track.style.transform = `translateX(-${index * 100}%)`;
+    }, 4000);
+
+    // Contact form
+    document.getElementById('contactForm').addEventListener('submit', e => {
+      e.preventDefault();
+      document.getElementById('thankYouMsg').style.display = 'block';
+      setTimeout(() => {
+        document.getElementById('thankYouMsg').style.display = 'none';
+        e.target.reset();
+      }, 2500);
+    });
+  </script>
+</body>
+</html>
